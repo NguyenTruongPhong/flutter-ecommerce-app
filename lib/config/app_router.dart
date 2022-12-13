@@ -9,18 +9,20 @@ class AppRouter {
     print('On route: ${settings.name}');
 
     switch (settings.name) {
-      case '/':
+      case HomeScreen.routeName:
         return HomeScreen.route();
       case CartScreen.routeName:
         return CartScreen.route();
       case CatalogScreen.routeName:
-        return CatalogScreen.route(settings.arguments as CategoryModel);
+        return CatalogScreen.route(settings.arguments as Category);
       case ProductScreen.routeName:
         return ProductScreen.route(settings.arguments as Product);
       case WishlistScreen.routeName:
         return WishlistScreen.route();
       case SplashScreen.routeName:
         return SplashScreen.route();
+      case CheckoutScreen.routeName:
+        return CheckoutScreen.route();
       default:
         return errorRoute();
     }

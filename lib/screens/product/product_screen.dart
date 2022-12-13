@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/wishlist/wishlist_bloc.dart';
-import '../../blocs/cart/cart_bloc.dart';
+// import '../../blocs/wishlist/wishlist_bloc.dart';
+// import '../../blocs/cart/cart_bloc.dart';
 
-import '../screens.dart';
+// import '../screens.dart';
 
 import '../../widgets/widgets.dart';
 
@@ -24,7 +24,7 @@ class ProductScreen extends StatelessWidget {
 
   static Route route(Product product) {
     return MaterialPageRoute(
-      builder: (_) => ProductScreen(product: product),
+      builder: (context) => ProductScreen(product: product),
       settings: const RouteSettings(name: routeName),
     );
   }
@@ -39,75 +39,10 @@ class ProductScreen extends StatelessWidget {
             appBar: CustomAppBar(
               title: product.name,
             ),
-            bottomNavigationBar: BottomAppBar(
-              color: Colors.black,
-              child: SizedBox(
-                height: 70,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.share,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                    ),
-                    BlocBuilder<WishlistBloc, WishlistState>(
-                      builder: (context, state) {
-                        _isWishlist = state is WishlistLoaded &&
-                                state.wishlist.products.contains(product)
-                            ? true
-                            : false;
-                        return IconButton(
-                          onPressed: () {
-                            var snackbar = const SnackBar(
-                              content: Text(
-                                  'Product was existing in your wishlist.'),
-                            );
-
-                            if (!_isWishlist) {
-                              context
-                                  .read<WishlistBloc>()
-                                  .add(AddWishlistProduct(product: product));
-
-                              snackbar = const SnackBar(
-                                content: Text('Added to your wishlist.'),
-                              );
-                            }
-
-                            ScaffoldMessenger.of(context)
-                              ..removeCurrentSnackBar()
-                              ..showSnackBar(snackbar);
-                          },
-                          icon: Icon(
-                            Icons.favorite,
-                            color: _isWishlist
-                                ? Theme.of(context).errorColor
-                                : Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                        );
-                      },
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context
-                            .read<CartBloc>()
-                            .add(CartProductAdded(product: product));
-                        Navigator.of(context).pushNamed(CartScreen.routeName);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                      child: Text(
-                        'ADD TO CART',
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            bottomNavigationBar: CustomNavBar(
+              screen: routeName,
+              product: product,
+              isWishlist: _isWishlist,
             ),
             body: SingleChildScrollView(
               child: Column(

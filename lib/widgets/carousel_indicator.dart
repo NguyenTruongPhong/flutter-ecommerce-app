@@ -9,14 +9,14 @@ class CarouselIndicator extends StatelessWidget {
     Key? key,
     required CarouselController carouselController,
     required int current,
-    required List<CategoryModel> categories,
+    required List<Category> categories,
   })  : _carouselController = carouselController,
         _current = current,
         _categories = categories,
         super(key: key);
 
   final int _current;
-  final List<CategoryModel> _categories;
+  final List<Category> _categories;
   final CarouselController _carouselController;
 
   @override

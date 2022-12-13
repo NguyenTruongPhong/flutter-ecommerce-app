@@ -76,7 +76,7 @@ class ProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '${product.category} #${product.id}',
+                          product.name,
                           style: Theme.of(context)
                               .textTheme
                               .headline5!
@@ -105,11 +105,13 @@ class ProductCard extends StatelessWidget {
                           .read<CartBloc>()
                           .add(CartProductAdded(product: product));
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Added to your Cart.'),
-                        ),
-                      );
+                      ScaffoldMessenger.of(context)
+                        ..removeCurrentSnackBar()
+                        ..showSnackBar(
+                          const SnackBar(
+                            content: Text('Added to your Cart.'),
+                          ),
+                        );
                     },
                     icon: const Icon(Icons.add_circle),
                     color: Theme.of(context).scaffoldBackgroundColor,

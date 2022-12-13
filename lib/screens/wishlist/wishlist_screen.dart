@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_ecommerce_app/blocs/wishlist/wishlist_bloc.dart';
+import '../../blocs/wishlist/wishlist_bloc.dart';
 
 // import '../../models/models.dart';
 
@@ -26,7 +26,9 @@ class WishlistScreen extends StatelessWidget {
       appBar: const CustomAppBar(
         title: 'Wishlist',
       ),
-      bottomNavigationBar: const CustomNavBar(),
+      bottomNavigationBar: const CustomNavBar(
+        screen: routeName,
+      ),
       body: BlocBuilder<WishlistBloc, WishlistState>(
         builder: (context, state) {
           if (state is WishlistLoading) {
@@ -42,21 +44,27 @@ class WishlistScreen extends StatelessWidget {
             //     leftPosition: 20,
             //   ),
             // );
-            return ListView.builder(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 10,
-              ),
-              itemCount: state.wishlist.products.length,
-              itemBuilder: (context, index) {
-                return ProductCard(
-                  product: state.wishlist.products[index],
-                  widthFactor: 0.9,
-                  leftPosition: 100,
-                  isWishlist: true,
-                );
-              },
-            );
+            return state.wishlist.products.isEmpty
+                ?  const BuildShowEmptyContent(
+                    content: 'Your Wishlist is empty!',
+                    buttonTitle: 'Back To Shopping',
+                    
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
+                    itemCount: state.wishlist.products.length,
+                    itemBuilder: (context, index) {
+                      return ProductCard(
+                        product: state.wishlist.products[index],
+                        widthFactor: 0.9,
+                        leftPosition: 100,
+                        isWishlist: true,
+                      );
+                    },
+                  );
           } else {
             return const Center(
               child: Text('Something went wrong.'),

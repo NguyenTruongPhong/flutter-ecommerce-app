@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:async';
 
+import 'package:flutter_ecommerce_app/screens/home/home_screen.dart';
+
 class SplashScreen extends StatelessWidget {
   const SplashScreen({
     super.key,
@@ -11,7 +13,7 @@ class SplashScreen extends StatelessWidget {
 
   static Route route() {
     return MaterialPageRoute(
-      builder: (_) => const SplashScreen(),
+      builder: (context) => const SplashScreen(),
       settings: const RouteSettings(name: routeName),
     );
   }
@@ -19,7 +21,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 2), () {
-      Navigator.of(context).pushNamed('/');
+      Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
     });
 
     return Scaffold(

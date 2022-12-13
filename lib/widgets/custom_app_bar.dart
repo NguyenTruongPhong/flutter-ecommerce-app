@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_ecommerce_app/screens/screens.dart';
+import '../screens/screens.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   const CustomAppBar({
@@ -16,6 +16,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       bottomOpacity: 5,
       elevation: 0,
+      centerTitle: true,
       title: Container(
         color: Colors.black,
         padding: const EdgeInsets.symmetric(

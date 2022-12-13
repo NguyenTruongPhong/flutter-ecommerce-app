@@ -11,7 +11,7 @@ class HeroCarouselCard extends StatelessWidget {
     this.product,
   });
 
-  final CategoryModel? category;
+  final Category? category;
   final Product? product;
 
   @override
@@ -21,7 +21,7 @@ class HeroCarouselCard extends StatelessWidget {
         if (product == null) {
           Navigator.of(context).pushNamed(
             CatalogScreen.routeName,
-            arguments: category as CategoryModel,
+            arguments: category as Category,
           );
         }
         return;
@@ -58,7 +58,7 @@ class HeroCarouselCard extends StatelessWidget {
                       vertical: 10.0, horizontal: 20.0),
                   child: Text(
                     product != null ? '' : category!.name,
-                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
                           color: Theme.of(context).scaffoldBackgroundColor,
                         ),
                   ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +15,7 @@ class CartScreen extends StatelessWidget {
 
   static Route route() {
     return MaterialPageRoute(
-      builder: (_) => const CartScreen(),
+      builder: (context) => const CartScreen(),
       settings: const RouteSettings(name: routeName),
     );
   }
@@ -27,23 +26,8 @@ class CartScreen extends StatelessWidget {
       appBar: const CustomAppBar(
         title: 'Cart',
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
-        child: SizedBox(
-          height: 70,
-          child: Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              ),
-              onPressed: () {},
-              child: Text(
-                'GO TO CHECKOUT',
-                style: Theme.of(context).textTheme.headline4,
-              ),
-            ),
-          ),
-        ),
+      bottomNavigationBar: const CustomNavBar(
+        screen: routeName,
       ),
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
@@ -52,153 +36,64 @@ class CartScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else if (state is CartProductLoaded) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 20,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
+            return LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
                                 state.cart.freeDeliveryString,
                                 style: Theme.of(context).textTheme.headline5,
                                 softWrap: true,
                                 overflow: TextOverflow.fade,
                               ),
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                shape: const RoundedRectangleBorder(),
-                                elevation: 0,
-                                padding: const EdgeInsets.all(5),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pushNamed('/');
-                              },
-                              child: Text(
-                                'Add More Items',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 300,
-                          child: ListView.builder(
-                            itemCount: state.cart.productQuantity().length,
-                            itemBuilder: (_, index) => CartProductCard(
-                              // key: Key(index.toString()),
-                              product: state.cart.productQuantity().keys.elementAt(index),
-                              quantity: state.cart.productQuantity().values.elementAt(index),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Divider(
-                          thickness: 3,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'SUBTOTAL',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                  Text(
-                                    '\$${state.cart.subTotalString}',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'DELIVERY FREE',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                  Text(
-                                    '\$${state.cart.deliveryFeeString}',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                ],
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  shape: const RoundedRectangleBorder(),
+                                  elevation: 0,
+                                  padding: const EdgeInsets.all(5),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .popUntil(ModalRoute.withName('/home'));
+                                },
+                                child: Text(
+                                  'Add More Items',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                      ),
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 25,
-                            vertical: 10,
-                          ),
-                          height: 50,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 5,
+                          if (state.cart.products.isNotEmpty)
+                            BuiltCardProductList(
+                              state: state,
                             ),
-                            color: Colors.black,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'TOTAL',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                    ),
-                              ),
-                              Text(
-                                '\$${state.cart.totalString}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                    ),
-                              ),
-                            ],
-                          ),
+                        ],
+                      ),
+                      if (state.cart.products.isEmpty)
+                        const BuildShowEmptyContent(
+                          content: 'Your Cart is Empty!',
+                          buttonTitle: 'Back To Shopping',
                         ),
-                      ],
-                    )
-                  ],
+                      const OrderSummary(),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -208,6 +103,30 @@ class CartScreen extends StatelessWidget {
             );
           }
         },
+      ),
+    );
+  }
+}
+
+class BuiltCardProductList extends StatelessWidget {
+  const BuiltCardProductList({
+    Key? key,
+    required this.state,
+  }) : super(key: key);
+
+  final CartProductLoaded state;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        itemCount: state.cart.productQuantity().length,
+        itemBuilder: (_, index) => CartProductCard(
+          // key: Key(index.toString()),
+          product: state.cart.productQuantity().keys.elementAt(index),
+          quantity: state.cart.productQuantity().values.elementAt(index),
+        ),
       ),
     );
   }

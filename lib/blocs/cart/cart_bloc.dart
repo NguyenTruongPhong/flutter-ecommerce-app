@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_ecommerce_app/models/cart_model.dart';
-import 'package:flutter_ecommerce_app/models/product_model.dart';
+
+import '../../models/models.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
@@ -11,6 +11,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<CartProductStarted>(_onCartProductStarted);
     on<CartProductAdded>(_onCartProductAdded);
     on<CartProductRemoved>(_onCartProductRemoved);
+    on<CartProductClear>(_onCartProductClear);
   }
 
   void _onCartProductStarted(
@@ -52,10 +53,42 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     try {
       if (state is CartProductLoaded) {
+
+        late int index;
+
+        final currentProducts = List.from(state.cart.products);
+
+        for (int i = currentProducts.length - 1; i >= 0; i--) {
+          if (currentProducts[i] == event.product) {
+            index = i;
+            break;
+          }
+          continue;
+        }
+
         emit(
           CartProductLoaded(
             cart: Cart(
-              products: List.from(state.cart.products)..remove(event.product),
+              products: List.from(currentProducts)..removeAt(index),
+            ),
+          ),
+        );
+      }
+    } catch (_) {}
+  }
+
+    void _onCartProductClear(
+    CartProductClear event,
+    Emitter<CartState> emit,
+  ) {
+    final state = this.state;
+
+    try {
+      if (state is CartProductLoaded) {
+        emit(
+          const CartProductLoaded(
+            cart: Cart(
+              products: [],
             ),
           ),
         );

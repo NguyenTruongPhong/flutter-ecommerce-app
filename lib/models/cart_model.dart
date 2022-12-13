@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_ecommerce_app/models/models.dart';
+import './models.dart';
 
 class Cart extends Equatable {
   const Cart({this.products = const <Product>[]});
@@ -7,14 +7,16 @@ class Cart extends Equatable {
   final List<Product> products;
 
   Map productQuantity() {
-    var quantity = {};
+    var quantity = <Product, int>{};
+    // print('products: $products');
     for (var product in products) {
-      if (!quantity.containsKey(product)) {
-        quantity[product] = 1;
-      } else {
-        quantity[product] += 1;
-      }
+      quantity.update(
+        product,
+        (existingQuantity) => existingQuantity += 1,
+        ifAbsent: () => 1,
+      );
     }
+    // print('quantity: $quantity');
     return quantity;
   }
 
